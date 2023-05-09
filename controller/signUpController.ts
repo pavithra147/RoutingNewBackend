@@ -1,61 +1,53 @@
-import { Request, Response } from "express";
-import { collection, connect } from "../db";
-import { ObjectId } from "mongodb";
-import bcrypt from "bcryptjs";
-import signUp from "../model/signUpModel";
-
-const signUpDetail = async (req: Request, res: Response) => {
-  const { userName, emailId, password, role, imageData } = req.body;
-  if (!userName || !emailId || !password || !role || !imageData) {
-    res.status(400).send({ message: "Content can not be empty" });
-    return;
+import { type Request, type Response } from 'express'
+import allMethods from '../services/signUpService'
+const signUpDetail = async (req: Request, res: Response): Promise<void> => {
+  const { userName, emailId, password, role, imageData } = req.body
+  if (
+    userName === undefined ||
+    emailId === undefined ||
+    password === undefined ||
+    role === undefined ||
+    imageData === undefined
+  ) {
+    res.status(400).send({ message: 'Content can not be empty' })
+    return
   }
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  const details: signUp = {
-    userName,
-    emailId,
-    password: hashedPassword,
-    role,
-    imageData,
-  };
   try {
-    await connect();
-    const result = await collection.insertOne(details);
-    //console.log(`Inserted document with _id: ${result.insertedId}`);
-    res.status(200).send(result);
-  } catch (err: any) {
-    res.status(500).send({ message: err.message || "Some error occurred" });
+    const result = await allMethods.signUpForCreate({ userName, emailId, password, role, imageData })
+    res.status(200)
+    res.send(result)
+    console.log(result)
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'An error occurred',
+      error: error.message
+    })
   }
-};
+}
 
-const getSignUpDetails = async (req: Request, res: Response) => {
+const getSignUpDetail = async (req: Request, res: Response): Promise<void> => {
   try {
-    await connect();
-    const get = await collection.find();
-    const getAll = await get.toArray();
-    res.status(200).send(getAll);
+    const get = await allMethods.getSignUpDetails()
+    res.status(200).send(get)
   } catch (err: any) {
-    res.status(500).send({ message: err.message });
+    res.status(500).send({ message: err.message })
   }
-};
+}
 
-const deleteDetails = async (req: Request, res: Response) => {
-  const { id } = req.params;
+const deleteDetails = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params
   try {
-    await connect();
-    const deleteDetail = collection.deleteOne({ _id: new ObjectId(id) });
-    res.status(200).send(deleteDetail);
+    const deleteDetail = await allMethods.deleteFromDatabase(id)
+    res.status(200).send(deleteDetail)
   } catch (err: any) {
-    res.status(500).send({ message: err.message });
+    res.status(500).send({ message: err.message })
   }
-};
+}
 
 const combinedExports = {
   signUpDetail,
-  getSignUpDetails,
-  deleteDetails,
-};
+  getSignUpDetail,
+  deleteDetails
+}
 
-export default combinedExports;
+export default combinedExports

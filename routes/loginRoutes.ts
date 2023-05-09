@@ -1,11 +1,13 @@
-import { Router } from "express";
-import { loginDetails } from "../controller/loginController";
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { Router } from 'express'
+import { loginDetails } from '../controller/loginController'
 
 const loginRoute = () => {
-  const router = Router();
+  const router = Router()
 
-  router.post("/login", loginDetails);
+  router.post('/login', loginDetails)
 
-  return router;
-};
-export { loginRoute };
+  return router
+}
+export { loginRoute }

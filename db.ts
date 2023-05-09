@@ -1,20 +1,14 @@
-import { Collection, ConnectOptions, Document, MongoClient } from "mongodb";
-import dotenv from "dotenv";
-dotenv.config({ path: "/home/asplap3256/Documents/RoutingBackendNew/.env" });
+import { MongoClient, type MongoClientOptions } from 'mongodb'
+import dotenv from 'dotenv'
+dotenv.config({ path: '/home/asplap3256/Documents/RoutingNewBackend/.env' })
 
-const uri: string = process.env.DATABASE_URL!;
-let client;
-let collection: Collection<Document>;
-let detailCollection: Collection<Document>;
-let loginCollection: Collection<Document>;
-async function connect() {
-  client = await MongoClient.connect(uri, {
-    useNewUrlParser: true,
-  } as ConnectOptions);
-  const db = client.db();
-  collection = db.collection("signUpdetail");
-  detailCollection = db.collection("detail");
-  loginCollection = db.collection("loginDetail");
+const uri: string | undefined = process.env.DATABASE_URL
+let client
+async function connect (): Promise<void> {
+  if (uri == null) {
+    throw new Error('No database URI specified')
+  }
+  client = await MongoClient.connect(uri, {} satisfies MongoClientOptions)
 }
 
-export { connect, collection, detailCollection, loginCollection };
+export { client, connect }
