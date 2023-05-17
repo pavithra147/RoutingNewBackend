@@ -1,22 +1,14 @@
 import { type Request, type Response } from 'express'
 import allMethods from '../services/signUpService'
+import bcrypt from 'bcryptjs'
 const signUpDetail = async (req: Request, res: Response): Promise<void> => {
-  const { userName, emailId, password, role, imageData } = req.body
-  if (
-    userName === undefined ||
-    emailId === undefined ||
-    password === undefined ||
-    role === undefined ||
-    imageData === undefined
-  ) {
-    res.status(400).send({ message: 'Content can not be empty' })
-    return
-  }
   try {
-    const result = await allMethods.signUpForCreate({ userName, emailId, password, role, imageData })
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+    req.body.password = hashedPassword
+    const result = await allMethods.signUpForCreate(req.body)
     res.status(200)
     res.send(result)
-    console.log(result)
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred',

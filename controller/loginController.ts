@@ -4,21 +4,15 @@ import jwt from 'jsonwebtoken'
 import loginDetailsService from '../services/loginService'
 
 const loginDetails = async (req: Request, res: Response): Promise<void> => {
-  const { emailId, password } = req.body as { emailId: string, password: string }
-  if (emailId === undefined || password === undefined) {
-    res.status(400).json({ message: 'EmailId or Password not present' })
-    return
-  }
   try {
-    // const user = await signUpCollection.findOne({ emailId: req.body.emailId })
-    const [user] = await loginDetailsService({ emailId, password })
+    const [user] = await loginDetailsService(req.body)
     if (user === undefined) {
       res
         .status(401)
         .json({ message: 'Login not Successful', error: 'Incorrect emailId' })
       return
     }
-    const passwordMatches = await bcrypt.compare(password, user?.password)
+    const passwordMatches = await bcrypt.compare(req.body.password, user?.password)
     if (!passwordMatches) {
       res
         .status(401)

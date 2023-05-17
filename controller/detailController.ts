@@ -1,40 +1,10 @@
 import { type Request, type Response } from 'express'
-// import { ObjectId } from 'mongodb'
-import type detailInput from '../model/detailModel'
-import { detailPage } from '../model/detailModel'
 import allDetailMethods from '../services/detailService'
 const createDetail = async (req: Request, res: Response): Promise<void> => {
-  const { name, age, dob, address, phoneno, location } = req.body as {
-    name: string
-    age: number
-    dob: string
-    address: string
-    phoneno: number
-    location: string
-  }
-
-  if (
-    name === undefined ||
-    age === undefined ||
-    dob === undefined ||
-    address === undefined ||
-    phoneno === undefined ||
-    location === undefined
-  ) {
-    res.status(400).send({ message: 'content can not be empty' })
-  }
-
-  const addedDetails: detailInput = {
-    name,
-    age,
-    dob,
-    address,
-    phoneno,
-    location
-  }
   try {
-    const result = await detailPage.insertOne(addedDetails)
+    const result = await allDetailMethods.createDetailService(req.body)
     res.status(200).send(result)
+    return
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred',
@@ -45,9 +15,9 @@ const createDetail = async (req: Request, res: Response): Promise<void> => {
 
 const getAllDetails = async (req: Request, res: Response): Promise<void> => {
   try {
-    const details = detailPage.find()
-    const customerDetails = await details.toArray()
+    const customerDetails = await allDetailMethods.getDetail()
     res.status(200).send(customerDetails)
+    return
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred',
@@ -69,7 +39,6 @@ const updateDetail = async (req: Request, res: Response): Promise<void> => {
     location === undefined
   ) {
     res.status(400).json({ message: 'the fields are required' })
-    return
   }
   try {
     const update = await allDetailMethods.updateDetailService(id, req.body)
@@ -82,11 +51,15 @@ const updateDetail = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-const deleteAddedDetails = async (req: Request, res: Response): Promise<void> => {
+const deleteAddedDetails = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params
   try {
     const detailDelete = await allDetailMethods.deleteDetailService(id)
     res.status(200).send(detailDelete)
+    return
   } catch (error: any) {
     res.status(500).json({
       message: 'An error occurred',
