@@ -13,6 +13,7 @@ const loginDetailsService = async ({
     }
     const user: signUp[] = [
       {
+        _id: userDetails?._id,
         userName: userDetails?.userName,
         emailId: userDetails?.emailId,
         password: userDetails?.password,
@@ -20,6 +21,14 @@ const loginDetailsService = async ({
         imageData: userDetails?.imageData
       }
     ]
+    // const user: signUp[] = userDetails?.map((userDetails: any) => {
+    //   _id: userDetails?._id
+    //   userName: userDetails?.userName
+    //   emailId: userDetails?.emailId
+    //   password: userDetails?.password
+    //   role: userDetails?.role
+    //   imageData: userDetails?.imageData
+    // })
     return user
   } catch (error: any) {
     throw new Error('Unable to login')

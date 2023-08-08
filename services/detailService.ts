@@ -29,7 +29,8 @@ const getDetail = async (): Promise<detailInput[]> => {
       dob: user.dob,
       address: user.address,
       phoneno: user.phoneno,
-      location: user.location
+      location: user.location,
+      likesCount: user.likesCount
     }))
     return details
   } catch (error: any) {

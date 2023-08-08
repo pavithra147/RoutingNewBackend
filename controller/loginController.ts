@@ -31,7 +31,8 @@ const loginDetails = async (req: Request, res: Response): Promise<void> => {
         message: 'Login Successful',
         data: user?.userName,
         role: user?.role,
-        image: user?.imageData
+        image: user?.imageData,
+        id: user?._id
       })
       return
     }

@@ -21,6 +21,7 @@ const signUpRoute = () => {
   router.post('/register', validateRequest, combinedExports.signUpDetail)
   router.get('/register', combinedExports.getSignUpDetail)
   router.delete('/register/:id', combinedExports.deleteDetails)
+  router.get('/signUp/:id', combinedExports.registerDetails)
   return router
 }
 

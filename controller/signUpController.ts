@@ -36,10 +36,23 @@ const deleteDetails = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
+const registerDetails = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params
+  console.log(id)
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+    const register = await allMethods.signUpDetailsExceptUserID(id)
+    res.status(200).send(register)
+  } catch (err: any) {
+    res.status(500).send({ message: err.message })
+  }
+}
+
 const combinedExports = {
   signUpDetail,
   getSignUpDetail,
-  deleteDetails
+  deleteDetails,
+  registerDetails
 }
 
 export default combinedExports

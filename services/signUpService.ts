@@ -18,6 +18,7 @@ const getSignUpDetails = async (): Promise<signUp[]> => {
   try {
     const getDetails = signUpCollection.find().toArray()
     const signUpDetails: signUp[] = (await getDetails).map((detail) => ({
+      _id: detail._id,
       userName: detail.userName,
       emailId: detail.emailId,
       password: detail.password,
@@ -39,10 +40,21 @@ const deleteFromDatabase = async (id: string): Promise<DeleteResult> => {
   }
 }
 
+const signUpDetailsExceptUserID = async (id: string): Promise<signUp[]> => {
+  try {
+    const signUpDetails = await signUpCollection.find({ _id: { $ne: new ObjectId(id) }, role: { $ne: 'Admin' } }).toArray()
+    console.log(signUpDetails)
+    return signUpDetails as signUp[]
+  } catch {
+    console.log(Error)
+    throw new Error('Unable to get details')
+  }
+}
 const allMethods = {
   signUpForCreate,
   getSignUpDetails,
-  deleteFromDatabase
+  deleteFromDatabase,
+  signUpDetailsExceptUserID
 }
 
 export default allMethods
